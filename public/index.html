@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar en Instagram</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Publicar en Instagram</h1>
+        <form id="postForm">
+            <div class="form-group">
+                <label for="date">Selecciona una fecha:</label>
+                <input type="date" id="date" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Publicar</button>
+        </form>
+
+        <div id="postPreview" class="mt-5">
+            <h2>Vista previa de la publicación</h2>
+            <p><strong>Fecha seleccionada:</strong> <span id="previewDate"></span></p>
+            <p><strong>Título:</strong> <span id="previewTitle"></span></p>
+            <p><strong>Descripción:</strong> <span id="previewDescription"></span></p>
+            <p><strong>Imagen:</strong> <img id="previewImage" src="" alt="Vista previa de la imagen" style="max-width: 150px;" ></p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    
+    <script>
+        $(document).ready(function () {
+            const mockData = {
+                title: 'Titulo de la publicación',
+                description: 'Descripción de la publicación.',
+                image: 'https://famores.com/wp-content/uploads/2024/03/perrito.jpg'
+            };
+
+            $('#postForm').on('submit', function (e) {
+                e.preventDefault();
+                
+                const selectedDate = $('#date').val();
+
+                if (selectedDate) {
+                    // Muestro la información en la vista previa
+                    $('#previewDate').text(selectedDate);
+                    $('#previewTitle').text(mockData.title);
+                    $('#previewDescription').text(mockData.description);
+                    $('#previewImage').attr('src', mockData.image);
+
+                    $.ajax({
+                        url: '/postToInstagram',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            date: selectedDate,
+                            title: mockData.title,
+                            description: mockData.description,
+                            image: mockData.image
+                        }),
+                        success: function (response) {
+                            console.log('Success:', response);
+                            alert('Publicación realizada con éxito');
+                        },
+                        error: function (error) {
+                            console.error('Error:', error);
+                            alert('Hubo un error al realizar la publicación');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
